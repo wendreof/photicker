@@ -1,0 +1,21 @@
+<resources>
+
+    <!--App name-->
+    <string name="app_name">Photicker</string>
+
+    <!--Global resources-->
+    <string name="googleplay_nao_encontrado">Não foi possível abrir o Google Play</string>
+    <string name="tirar_nova_foto">Tirar nova foto</string>
+    <string name="unexpected_error">Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.</string>
+    <string name="share_image">Compartilhar imagem</string>
+    <string name="whatsapp_not_installed">O aplicativo WhatsApp não está instalado.</string>
+    <string name="twitter_not_installed">O aplicativo Twitter não está instalado.</string>
+    <string name="instagram_not_installed">O aplicativo Instagram não está instalado.</string>
+    <string name="openning_share">Carregando compartilhamento. Por favor, aguarde..</string>
+
+    <string name="permission_storage_explanation">Photicker precisa de permissões para criar imagens e fotos, assim poderá criar compartilhamentos para o Insta, Face e Twitter. Aceite as permissões solicitadas, senão, não será possível tirar fotos.</string>
+    <string name="permission_camera_explanation">Photicker precisa de permissão de acesso a câmera para você tirar fotos. Sem esta permissão, não será possível tirar fotos.</string>
+    <string name="btn_ok">OK</string>
+    <string name="without_permission_camera_explanation">Permissão não concedida, não será possível tirar fotos.</string>
+    <string name="without_permission_storage_explanation">Permissão não concedida, não será possível compartilhar fotos sem esta permissão.</string>
+</resources>

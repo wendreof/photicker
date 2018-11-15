@@ -1,0 +1,24 @@
+<resources>
+
+    <!--App name-->
+    <string name="app_name">Photicker</string>
+
+    <!--Global resources-->
+    <string name="googleplay_nao_encontrado">Could not open Google Play</string>
+    <string name="tirar_nova_foto">Take a picture</string>
+    <string name="unexpected_error">An unexpected error occurred. Please try again later.</string>
+    <string name="share_image">Share image</string>
+    <string name="whatsapp_not_installed">WhatsApp is not installed.</string>
+    <string name="twitter_not_installed">Twitter is not installed.</string>
+    <string name="instagram_not_installed">Instagram is not installed.</string>
+    <string name="openning_share">Loading. Please, wait..</string>
+
+    <!--Facebook-->
+    <string name="facebook_app_id" translatable="false">1795556020676070</string>
+
+    <string name="permission_storage_explanation">The app needs permissions to create images and photos, so you can create shares for Insta, Face and Twitter. Accept the requested permissions, otherwise can not take pictures.</string>
+    <string name="permission_camera_explanation">The app needs permission to access the camera for you to take photos. Without this permission, you can not take pictures!</string>
+    <string name="btn_ok">OK</string>
+    <string name="without_permission_camera_explanation">Permission not granted, it will not be possible to take photos.</string>
+    <string name="without_permission_storage_explanation">Permission not granted, it will not be possible to share photos without this permission.</string>
+</resources>
