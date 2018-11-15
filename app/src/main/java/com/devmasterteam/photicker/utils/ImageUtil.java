@@ -1,13 +1,18 @@
 package com.devmasterteam.photicker.utils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.devmasterteam.photicker.R;
+import com.devmasterteam.photicker.views.MainActivity;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,8 +103,8 @@ public class ImageUtil {
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > reqHeight || width > reqWidth) {
-
+        if ( height > reqHeight || width > reqWidth )
+        {
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
@@ -115,27 +120,60 @@ public class ImageUtil {
     }
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) {
+                                                         int reqWidth, int reqHeight)
+    {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
+        BitmapFactory.decodeResource( res, resId, options );
 
         // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inSampleSize = calculateInSampleSize( options, reqWidth, reqHeight );
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+        return BitmapFactory.decodeResource( res, resId, options );
     }
 
-    public static void handleZoomIn(ImageView mImageSelected)
+    public static void handleZoomIn( ImageView mImageSelected )
     {
-        if(mImageSelected.getWidth() > 800)
+        if ( mImageSelected.getWidth() > 800 )
         {
             ViewGroup.LayoutParams params = mImageSelected.getLayoutParams();
-            params.width = (int) (mImageSelected.getWidth() += * 0.1);
+            params.width = ( int ) ( mImageSelected.getWidth() + (mImageSelected.getWidth() * 0.1) );
+            params.height = ( int ) ( mImageSelected.getHeight() + (mImageSelected.getHeight() * 0.1) );
+            mImageSelected.setLayoutParams( params );
         }
+    }
+
+    public static void handleZoomOut( ImageView mImageSelected )
+    {
+        if ( mImageSelected.getWidth() < 50 )
+        {
+            ViewGroup.LayoutParams params = mImageSelected.getLayoutParams();
+            params.width = ( int ) ( mImageSelected.getWidth() - (mImageSelected.getWidth() * 0.1) );
+            params.height = ( int ) ( mImageSelected.getHeight() - (mImageSelected.getHeight() * 0.1) );
+            mImageSelected.setLayoutParams(params);
+        }
+    }
+
+    public static void handlerotate_left( ImageView mImageSelected )
+    {
+        mImageSelected.setRotation( mImageSelected.getRotation() - 5 );
+    }
+
+    public static void handlerotate_right( ImageView mImageSelected )
+    {
+        mImageSelected.setRotation( mImageSelected.getRotation() + 5 );
+
+    }
+
+    public static File createImageFile( Context context ) throws IOException
+    {
+        String imageFileName = "photicker";
+        File storeDir = context.getExternalFilesDir( Environment.DIRECTORY_PICTURES );
+        File image = File.createTempFile( imageFileName, ".jpg", storeDir );
+        return image;
     }
 }
