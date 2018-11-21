@@ -4,10 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -19,12 +20,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.devmasterteam.photicker.R;
 import com.devmasterteam.photicker.utils.ImageUtil;
 import com.devmasterteam.photicker.utils.LongEventType;
 import com.devmasterteam.photicker.utils.PermissionUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -43,6 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+      // teste para resolve rproblema da camera *****
+
+      //  StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        //StrictMode.setVmPolicy(builder.build());
+
+        // teste para resolve rproblema da camera *****
 
         getSupportActionBar().setDisplayShowTitleEnabled( false );
         getSupportActionBar().setDisplayShowHomeEnabled( true );
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.mViewHolder.mLinearControllPanel = ( LinearLayout) this.findViewById(R.id.linear_control_panel );
         this.mViewHolder.mLinearLayoutSharePanel = ( LinearLayout) this.findViewById(R.id.linear_share_panel );
 
+        this.mViewHolder.mImagePhoto = (ImageView) this.findViewById( R .id.image_photo );
         this.mViewHolder.mButtonZoomIn = ( ImageView) this.findViewById( R.id.image_zoom_in );
         this.mViewHolder.mButtonZoomOut = ( ImageView) this.findViewById( R.id.image_zoom_out );
         this.mViewHolder.mButtonRotateLeft = ( ImageView) this.findViewById( R.id.image_rotate_left );
@@ -214,6 +221,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+       if ( requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK )
+       {
+           this.setPhotoAsBackground();
+       }
+    }
+
+    private void setPhotoAsBackground()
+    {
+        int targetW = this.mViewHolder.mImagePhoto.getWidth();
+        int targetH = this.mViewHolder.mImagePhoto.getHeight();
+
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile( this.mViewHolder.mUriPhotoPath.getPath(), bmOptions) ;
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        int scaleFactory = Math.min( photoW / targetW, photoH / targetH );
+
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactory;
+
+        Bitmap bitmap = BitmapFactory.decodeFile( this.mViewHolder.mUriPhotoPath.getPath(), bmOptions );
+
+        this.mViewHolder.mImagePhoto.setImageBitmap( bitmap );
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if ( requestCode == PermissionUtil.CAMERA_PERMISSION )
@@ -236,8 +273,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }).show();
             }
         }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void dispatchTakePictureIntent()
@@ -304,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageView mButtonRotateRight;
         ImageView mButtonRotateFinish;
         ImageView mButtonRotateRemove;
+        ImageView mImagePhoto;
         LinearLayout mLinearLayoutSharePanel;
         LinearLayout mLinearControllPanel;
         RelativeLayout mRelativePhotoContent;

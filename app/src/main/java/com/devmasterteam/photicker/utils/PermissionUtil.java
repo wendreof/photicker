@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-
 import com.devmasterteam.photicker.R;
 import com.devmasterteam.photicker.views.MainActivity;
+
+import java.lang.reflect.Method;
 
 public class PermissionUtil
 {
@@ -27,7 +29,32 @@ public class PermissionUtil
 
     private static boolean needToAskPermission()
     {
-        return ( Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 );
+
+        // **** INÍCIO trecho de código adicionado para solucionar CRASH DA CAMERA ****
+
+        if ( Build.VERSION.SDK_INT>=24 )
+        {
+            try
+            {
+                Method m = StrictMode.class.getMethod( "disableDeathOnFileUriExposure" );
+                m.invoke( null );
+            }
+            catch( Exception e )
+            {
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+
+        // **** FIM trecho de código adicionado para solucionar CRASH DA CAMERA ****
+
+        // codigo usando anteriormente acima -> return ( Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 );
     }
 
     public static void asksCameraPermission(final MainActivity context) {
