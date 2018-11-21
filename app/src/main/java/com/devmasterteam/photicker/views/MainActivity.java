@@ -1,12 +1,16 @@
 package com.devmasterteam.photicker.views;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 import com.devmasterteam.photicker.R;
 import com.devmasterteam.photicker.utils.ImageUtil;
 import com.devmasterteam.photicker.utils.LongEventType;
+import com.devmasterteam.photicker.utils.PermissionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setListener()
     {
+        this.findViewById( R.id.image_take_photo).setOnClickListener( this );
         this.findViewById(R.id.image_zoom_in).setOnClickListener( this );
         this.findViewById(R.id.image_zoom_out).setOnClickListener( this );
         this.findViewById(R.id.image_rotate_left).setOnClickListener( this );
@@ -176,6 +182,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch ( v.getId() )
         {
             case R.id.image_take_photo:
+
+                if ( ! PermissionUtil.hasCameraPersmission ( this ))
+                {
+                    PermissionUtil.asksCameraPermission ( this );
+                }
+
                 dispatchTakePictureIntent();
                 break;
 
@@ -199,6 +211,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 this.mViewHolder.mRelativePhotoContent.removeView( this.mImageSelected );
                 break;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if ( requestCode == PermissionUtil.CAMERA_PERMISSION )
+        {
+            if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED )
+            {
+                dispatchTakePictureIntent();
+            }
+            else
+            {
+                new AlertDialog.Builder( this)
+                        .setMessage( getString( R.string.without_permission_camera_explanation))
+                        .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        }).show();
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void dispatchTakePictureIntent()
