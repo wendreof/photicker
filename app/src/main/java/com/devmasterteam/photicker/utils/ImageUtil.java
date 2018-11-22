@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Environment;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.devmasterteam.photicker.R;
-import com.devmasterteam.photicker.views.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -175,5 +178,50 @@ public class ImageUtil {
         File storeDir = context.getExternalFilesDir( Environment.DIRECTORY_PICTURES );
         File image = File.createTempFile( imageFileName, ".jpg", storeDir );
         return image;
+    }
+
+    public static Bitmap rotateImageIfRequerid( Bitmap img, Uri selectedImage )
+    {
+        ExifInterface exifInterface;
+
+        try
+        {
+            exifInterface = new ExifInterface( selectedImage.getPath() );
+
+            int orientation = exifInterface.getAttributeInt( ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL );
+
+            switch (orientation)
+            {
+                case  ExifInterface.ORIENTATION_ROTATE_90:
+                    return rotateImage (img, 90);
+                case  ExifInterface.ORIENTATION_ROTATE_180:
+                    return rotateImage (img, 180);
+                case  ExifInterface.ORIENTATION_ROTATE_270:
+                    return rotateImage (img, 270);
+            }
+        }
+        catch ( IOException e )
+        {
+            return img;
+        }
+
+        return img;
+    }
+
+    private static Bitmap rotateImage( Bitmap img, int degree )
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate( degree );
+        Bitmap rotateImage = Bitmap.createBitmap( img, 0, 0, img.getWidth(), img.getHeight(), matrix, false );
+
+        img.recycle();
+
+        return rotateImage;
+    }
+
+    public static Bitmap drawBitmap( RelativeLayout mRelativePhotoContent )
+    {
+        mRelativePhotoContent.setDrawingCacheEnabled( true );
+        return mRelativePhotoContent.getDrawingCache();
     }
 }

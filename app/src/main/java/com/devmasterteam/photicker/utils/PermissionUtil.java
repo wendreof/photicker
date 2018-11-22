@@ -32,7 +32,9 @@ public class PermissionUtil
 
         // **** INÍCIO trecho de código adicionado para solucionar CRASH DA CAMERA ****
 
-        if ( Build.VERSION.SDK_INT>=24 )
+        //link : https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+
+        if ( Build.VERSION.SDK_INT >= 24 )
         {
             try
             {

@@ -24,6 +24,8 @@ import com.devmasterteam.photicker.R;
 import com.devmasterteam.photicker.utils.ImageUtil;
 import com.devmasterteam.photicker.utils.LongEventType;
 import com.devmasterteam.photicker.utils.PermissionUtil;
+import com.devmasterteam.photicker.utils.SocialUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -80,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.mViewHolder.mLinearControllPanel = ( LinearLayout) this.findViewById(R.id.linear_control_panel );
         this.mViewHolder.mLinearLayoutSharePanel = ( LinearLayout) this.findViewById(R.id.linear_share_panel );
 
+        this.mViewHolder.mImageInstagram = (ImageView) this.findViewById( R.id.image_instagram );
+        this.mViewHolder.mImageFacebook = (ImageView) this.findViewById( R.id.image_facebook );
+        this.mViewHolder.mImageTwitter = (ImageView) this.findViewById( R.id.image_twitter );
+        this.mViewHolder.mImageWhatsapp = (ImageView) this.findViewById( R.id.image_whats );
+
         this.mViewHolder.mImagePhoto = (ImageView) this.findViewById( R .id.image_photo );
         this.mViewHolder.mButtonZoomIn = ( ImageView) this.findViewById( R.id.image_zoom_in );
         this.mViewHolder.mButtonZoomOut = ( ImageView) this.findViewById( R.id.image_zoom_out );
@@ -101,6 +108,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.findViewById(R.id.image_finisht).setOnClickListener( this );
         this.findViewById(R.id.image_remove).setOnClickListener( this );
         this.findViewById(R.id.image_take_photo).setOnClickListener( this );
+
+        this.findViewById( R.id.image_whats).setOnClickListener( this );
+        this.findViewById( R.id.image_instagram).setOnClickListener( this );
+        this.findViewById( R.id.image_twitter).setOnClickListener( this );
+        this.findViewById( R.id.image_facebook).setOnClickListener( this );
 
         this.findViewById(R.id.image_zoom_in).setOnLongClickListener( this );
         this.findViewById(R.id.image_zoom_out).setOnLongClickListener( this );
@@ -217,6 +229,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.image_remove:
                 this.mViewHolder.mRelativePhotoContent.removeView( this.mImageSelected );
                 break;
+
+            case R.id.image_instagram:
+                SocialUtil.shareImageOnInsta( this, mViewHolder.mRelativePhotoContent, v);
+                break;
+            case R.id.image_facebook:
+                SocialUtil.shareImageOnFace( this, mViewHolder.mRelativePhotoContent, v);
+                break;
+            case R.id.image_twitter:
+                SocialUtil.shareImageOnTT( this, mViewHolder.mRelativePhotoContent, v);
+                break;
+            case R.id.image_whats:
+                SocialUtil.shareImageOnWhats( this, mViewHolder.mRelativePhotoContent, v);
+                break;
         }
     }
 
@@ -247,7 +272,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Bitmap bitmap = BitmapFactory.decodeFile( this.mViewHolder.mUriPhotoPath.getPath(), bmOptions );
 
-        this.mViewHolder.mImagePhoto.setImageBitmap( bitmap );
+        Bitmap bitmapRotated = ImageUtil.rotateImageIfRequerid( bitmap, this.mViewHolder.mUriPhotoPath );
+
+        this.mViewHolder.mImagePhoto.setImageBitmap( bitmapRotated );
     }
 
     @Override
@@ -331,6 +358,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private static class ViewHolder {
+
+        ImageView mImageInstagram;
+        ImageView mImageFacebook;
+        ImageView mImageTwitter;
+        ImageView mImageWhatsapp;
 
         Uri mUriPhotoPath;
         ImageView mButtonZoomIn;
