@@ -1,5 +1,6 @@
 package com.devmasterteam.photicker.utils;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,6 +13,10 @@ import android.widget.Toast;
 
 import com.devmasterteam.photicker.R;
 import com.devmasterteam.photicker.views.MainActivity;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,18 +44,21 @@ public class SocialUtil
 
               image.compress( Bitmap.CompressFormat.JPEG, 100, bytes);
 
-
               File file = new File( Environment.getExternalStorageDirectory() + File.separator + "temp_file.jpg");
 
               try
               {
-                  File.createNewFile();
+                  file.createNewFile();
                   FileOutputStream fo = new FileOutputStream( file );
                   fo.write( bytes.toByteArray() );
 
                   Intent sendIntent = new Intent();
                   sendIntent.setAction( Intent.ACTION_SEND );
                   sendIntent.putExtra( Intent.EXTRA_STREAM, Uri.parse( "file:///sdcard/temp_file.jpg"));
+                  sendIntent.setType("image/*");
+                  sendIntent.setPackage("com.instagram.android");
+
+                  v.getContext().startActivity( Intent.createChooser( sendIntent, mainActivity.getString( R.string.share_image )));
               }
 
               catch ( FileNotFoundException e )
@@ -77,6 +85,14 @@ public class SocialUtil
 
     public static void shareImageOnFace( MainActivity mainActivity, RelativeLayout mRelativePhotoContent, View v )
     {
+        SharePhoto photo = new SharePhoto.Builder().setBitmap(ImageUtil.drawBitmap( mRelativePhotoContent )).build();
+
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto( photo )
+                .setShareHashtag( new ShareHashtag.Builder().setHashtag( HASHTAG).build())
+                .build();
+
+        new ShareDialog( mainActivity ).show( content );
     }
 
     public static void shareImageOnWhats( MainActivity mainActivity, RelativeLayout mRelativePhotoContent, View v )
